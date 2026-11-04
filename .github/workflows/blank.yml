@@ -6,16 +6,20 @@ jobs:
   download:
     runs-on: ubuntu-latest
     steps:
-    - name: Install yt-dlp
-      run: |
-        sudo wget https://github.com -O /usr/local/bin/yt-dlp
-        sudo chmod a+rx /usr/local/bin/yt-dlp
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-python-version: '3.x'
 
-    - name: Download Video Server Side
+    - name: Install yt-dlp via Pip
       run: |
-        yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" "https://www.youtube.com/watch?v=bHxLy6Qza3M" -o "downloaded_video.mp4"
+        python3 -m pip install --upgrade yt-dlp
 
-    - name: Upload Video as Artifact
+    - name: Run Video Download
+      run: |
+        yt-dlp --no-playlist -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" "https://www.youtube.com/watch?v=bHxLy6Qza3M" -o "downloaded_video.mp4"
+
+    - name: Save Video File
       uses: actions/upload-artifact@v4
       with:
         name: youtube-video
